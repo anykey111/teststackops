@@ -41,16 +41,16 @@ moving_op(swap).
 moving_op(roll(_)).
 
 ds_solve([], S, S).
-ds_solve(Ops, Source, Result) :-
-    (
-        ds_eval(Op, Source, Result),
-        Ops = [Op]
-    ;
-        moving_op(Op1),
-        ds_eval(Op1, Source, Temp),
-        ds_eval(Op2, Temp, Result),
-        Ops = [Op2,Op1]
-    ).
+ds_solve([Op], Source, Result) :-
+    same_length(Source, Result),
+    moving_op(Op),
+    ds_eval(Op, Source, Result).
+ds_solve([Op], Source, Result) :-
+    ds_eval(Op, Source, Result).
+ds_solve([Op2,Op1], Source, Result) :-
+    moving_op(Op1),
+    ds_eval(Op1, Source, Temp),
+    ds_eval(Op2, Temp, Result).
 
 copy_named(State0, Name, 0, State_out) :-
     Stack1 = [Name|State0.stack],
@@ -202,27 +202,27 @@ juggle(Stack,Expr,Result) :-
 :- begin_tests(user).
 
 test(cse1, []) :-
-    once(gen_expr([a], a*a+a*a, X)),
-    assertion(X == [+, dup, *, dup]).
+    once(gen_expr([a], a*a+a*a, (_,X))),
+    assertion(X == [dup,*,dup,+]).
 
 test(cse2, []) :-
-    once(gen_expr([a,b], a*b+a*b, X)),
-    assertion(X == [+, dup, *, swap]).
+    once(gen_expr([a,b], a*b+a*b, (_,X))),
+    assertion(X == [swap,*,dup,+]).
 
 test(cse3, []) :-
-    once(gen_expr([a,b,c], a*b+c+a*b, X)),
-    assertion(X == [+, swap, +, rot, dup, *, swap]).
+    once(gen_expr([a,b,c], a*b+c+a*b, (_,X))),
+    assertion(X == [swap,*,dup,rot,+,swap,+]).
 
 test(r_first, []) :-
-    once(gen_expr([a,b], a+b*a, X)),
-    assertion(X == [+, *, tuck]).
+    once(gen_expr([a,b], a+b*a, (_,X))),
+    assertion(X == [tuck,*,+]).
 
 test(preshufle, []) :-
-    once(gen_expr([b,a], a+b*a, X)),
-    assertion(X == [+, *, over]).
+    once(gen_expr([b,a], a+b*a, (_,X))),
+    assertion(X == [over,*,+]).
 
 test(numbers, []) :-
-    once(gen_expr([b,a], a+b*a-1, X)),
-    assertion(X == [-, 1, +, *, over]).
+    once(gen_expr([b,a], a+b*a-1, (_,X))),
+    assertion(X == [over,*,+,1,-]).
 
 :- end_tests(user).

@@ -6,26 +6,26 @@ Running from command line
 
     % a b c -- x
     swipl -s stackops -g 'juggle([a,b,c],a*a+b*b+c,X)'
-    21,[+,swap,+,*,rot,over,*,dup]
-    23,[+,swap,+,*,rot,over,*,swap,dup]
-    23,[+,swap,+,*,rot,tuck,swap,*,dup]
-    25,[+,swap,+,*,rot,tuck,swap,*,swap,dup]
+    21,[dup,*,over,rot,*,+,swap,+]
+    23,[dup,*,swap,tuck,rot,*,+,swap,+]
+    23,[dup,swap,*,over,rot,*,+,swap,+]
+    25,[dup,swap,*,swap,tuck,rot,*,+,swap,+]
 
     % a b c -- x
     swipl -s stackops -g 'juggle([a,b,c],a*a+b*b*2+c,X)'
-    25,[+,swap,+,*,2,*,rot,over,*,dup]
-    27,[+,swap,+,*,2,*,rot,over,*,swap,dup]
-    27,[+,swap,+,*,2,*,rot,tuck,swap,*,dup]
-    29,[+,swap,+,*,2,*,rot,tuck,swap,*,swap,dup]
+    25,[dup,*,over,rot,*,2,*,+,swap,+]
+    27,[dup,*,swap,tuck,rot,*,2,*,+,swap,+]
+    27,[dup,swap,*,over,rot,*,2,*,+,swap,+]
+    29,[dup,swap,*,swap,tuck,rot,*,2,*,+,swap,+]
 
     % a b -- x
     swipl -s stackops -g 'juggle([a,b],a+b*a,X)'
-    9,[+,*,tuck]
-    11,[+,*,over,swap]
+    9,[tuck,*,+]
+    11,[swap,over,*,+]
     ...
 
     % b a -- x
-    3 ?- juggle([b,a],a*b+a*b,X).
+    ?- juggle([b,a],a*b+a*b,X).
     7,[*,dup,+]
     9,[*,dup,swap,+]
     11,[swap,swap,*,dup,+]
